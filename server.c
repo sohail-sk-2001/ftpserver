@@ -48,6 +48,11 @@ perror("Send failed");
 exit(1);
 }// Close the sockets
 //ls command starting 
+int n;
+recv(client_sock,&n,4,0);
+//printf("%d",n);
+if(n==1){
+printf("The List of files have been sent to the client");
 system("ls>a.txt");
 char str[50];
 char *msg="";
@@ -61,7 +66,9 @@ while(fgets(str,50,fp)!=NULL){
 	msg=(char *)realloc(msg,l1+l2);
 	strcat(msg,str);
 }
+msg[strlen(msg)]='\0';
 send(client_sock,msg,strlen(msg),0);
+}
 close(client_sock);
 close(server_sock);
 return 0;

@@ -25,6 +25,7 @@ if (connect(client_sock, (struct sockaddr *)&server_addr, sizeof(struct sockaddr
 perror("Connect failed");
 exit(1);
 }// Receive welcome message from server
+
 bytes_recv = recv(client_sock, buffer, 1024, 0);
 if (bytes_recv == -1)
 {
@@ -33,8 +34,14 @@ exit(1);
 }
 buffer[bytes_recv] = '\0';
 printf("%s", buffer);
+bzero(buffer,sizeof(buffer));
+int n;
+printf("Enter your choice:\n1.ls\n2.Read\n3.Write\n");
+scanf("%d",&n);
+if(send(client_sock,&n,4,0)>0){
 recv(client_sock,buffer,1024,0);
 printf("The list of files in server:\n %s",buffer);
+}
 // Close the socket
 close(client_sock);
 return 0;
