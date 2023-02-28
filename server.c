@@ -8,6 +8,44 @@
 #include <arpa/inet.h>
 #define PORT 21
 
+void list(int client_sock);
+
+void handle_connection(int client_sock){
+int bytes_sent;
+char welcome_msg[] = "220 Welcome to FTP server\r\n";
+bytes_sent = send(client_sock, welcome_msg, strlen(welcome_msg), 0);
+if (bytes_sent == -1)
+{
+perror("Send failed");
+exit(1);
+}// Close the sockets
+//ls command starting 
+int n;
+recv(client_sock,&n,4,0);
+//printf("%d",n);
+if(n==1){
+list(client_sock);
+}}
+
+void list(int client_sock){
+printf("The List of files have been sent to the client");
+system("ls>a.txt");
+char str[50];
+char *msg="";
+FILE *fp=fopen("a.txt","r");
+int k,p;
+int l1,l2;
+msg = (char *)malloc(1);
+while(fgets(str,50,fp)!=NULL){
+        l1=strlen(str);
+        l2=strlen(msg);
+        msg=(char *)realloc(msg,l1+l2);
+        strcat(msg,str);
+}
+msg[strlen(msg)]='\0';
+send(client_sock,msg,strlen(msg),0);
+}
+
 int main()
 {
 int server_sock, client_sock, bytes_sent, bytes_recv;
@@ -34,13 +72,13 @@ exit(1);
 }
 printf("FTP server waiting for connections...\n");// Accept incoming connections
 socklen_t client_len = sizeof(struct sockaddr_in);
-if ((client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_len)) == -1)
-{
+if ((client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_len)) == -1){
 perror("Accept failed");
 exit(1);
 }
 printf("Connection accepted from %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));// Send welcome message to client
-char welcome_msg[] = "220 Welcome to FTP server\r\n";
+handle_connection(client_sock);
+/*char welcome_msg[] = "220 Welcome to FTP server\r\n";
 bytes_sent = send(client_sock, welcome_msg, strlen(welcome_msg), 0);
 if (bytes_sent == -1)
 {
@@ -52,23 +90,8 @@ int n;
 recv(client_sock,&n,4,0);
 //printf("%d",n);
 if(n==1){
-printf("The List of files have been sent to the client");
-system("ls>a.txt");
-char str[50];
-char *msg="";
-FILE *fp=fopen("a.txt","r");
-int k,p;
-int l1,l2;
-msg = (char *)malloc(1);
-while(fgets(str,50,fp)!=NULL){
-	l1=strlen(str);
-	l2=strlen(msg);
-	msg=(char *)realloc(msg,l1+l2);
-	strcat(msg,str);
-}
-msg[strlen(msg)]='\0';
-send(client_sock,msg,strlen(msg),0);
-}
+list(client_sock);
+}*/
 close(client_sock);
 close(server_sock);
 return 0;
