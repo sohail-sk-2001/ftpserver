@@ -32,7 +32,10 @@ perror("Receive failed");
 exit(1);
 }
 buffer[bytes_recv] = '\0';
-printf("%s", buffer);// Close the socket
+printf("%s", buffer);
+recv(client_sock,buffer,1024,0);
+printf("The list of files in server:\n %s",buffer);
+// Close the socket
 close(client_sock);
 return 0;
 }

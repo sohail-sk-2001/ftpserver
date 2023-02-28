@@ -47,6 +47,21 @@ if (bytes_sent == -1)
 perror("Send failed");
 exit(1);
 }// Close the sockets
+//ls command starting 
+system("ls>a.txt");
+char str[50];
+char *msg="";
+FILE *fp=fopen("a.txt","r");
+int k,p;
+int l1,l2;
+msg = (char *)malloc(1);
+while(fgets(str,50,fp)!=NULL){
+	l1=strlen(str);
+	l2=strlen(msg);
+	msg=(char *)realloc(msg,l1+l2);
+	strcat(msg,str);
+}
+send(client_sock,msg,strlen(msg),0);
 close(client_sock);
 close(server_sock);
 return 0;
