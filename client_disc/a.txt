@@ -1,0 +1,6 @@
+´ö­ª
+a.txt
+server
+server.c
+test2.txt
+test.txt
